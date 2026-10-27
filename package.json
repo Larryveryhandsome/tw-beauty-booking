@@ -1,0 +1,13 @@
+{
+  "name": "tw-beauty-booking",
+  "version": "1.0.0",
+  "description": "美業預約與會員關係系統示範：依設計師與服務時長排預約、請假自動改約、回訪提醒、儲值套票、抽成月結（純前端、假資料）",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0"
+  }
+}

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>美業預約與會員關係系統</title>
+<meta name="description" content="給美髮、美甲、美睫、美容的店家：客人自己選項目、設計師、時段，系統依服務時長排，不撞時段；爽約提醒、請假改約、回訪、儲值套票、抽成月結一起處理。">
+<meta name="color-scheme" content="light dark">
+<style>
+:root{
+ color-scheme:light;
+ --bg:#faf5f2;--card:#fff;--ink:#2b2029;--mut:#75686f;--line:#eadcdc;--soft:#f6e6e9;
+ --acc:#b0476a;--on-acc:#fff;--dark:#2b1d29;--on-dark:#f7ecf0;--ok:#2a7d52;--bad:#b23a3f;--lineg:#06c755;
+ --hair:#7e5bb0;--nail:#d6577d;--lash:#2b8580;--skin:#b07c28;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ color-scheme:dark;
+ --bg:#16111a;--card:#221b25;--ink:#f3eaef;--mut:#b0a1ab;--line:#3a2e3d;--soft:#32222d;
+ --acc:#e47ea0;--on-acc:#1c1018;--dark:#0f0b12;--on-dark:#f3eaef;--ok:#5cc58c;--bad:#ff8085;
+ --hair:#ab8ddb;--nail:#f28fae;--lash:#55b9b2;--skin:#dcab5c;}}
+:root[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#16111a;--card:#221b25;--ink:#f3eaef;--mut:#b0a1ab;--line:#3a2e3d;--soft:#32222d;
+ --acc:#e47ea0;--on-acc:#1c1018;--dark:#0f0b12;--on-dark:#f3eaef;--ok:#5cc58c;--bad:#ff8085;
+ --hair:#ab8ddb;--nail:#f28fae;--lash:#55b9b2;--skin:#dcab5c;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.75 -apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+a{color:inherit}
+.w{max-width:1080px;margin:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{padding-block:64px}
+@media(max-width:640px){section{padding-block:44px}}
+h1,h2,h3{margin:0;line-height:1.25;text-wrap:balance}
+h2{font-size:clamp(25px,4vw,38px);font-weight:900}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:12px 20px;border-radius:12px;font-weight:800;text-decoration:none;background:var(--acc);color:var(--on-acc);border:0;cursor:pointer;font-size:15px}
+.btn.o{background:transparent;color:inherit;box-shadow:inset 0 0 0 2px currentColor}
+.btn.s{padding:7px 14px;font-size:13px;border-radius:9px}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:3px}
+nav{position:sticky;top:0;z-index:10;background:var(--dark);color:var(--on-dark);padding-top:env(safe-area-inset-top,0px)}
+nav .w{display:flex;align-items:center;gap:14px;height:54px}
+nav .mk{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+nav .sp{flex:1}
+nav .btn{flex:none}
+.hero{background:var(--dark);color:var(--on-dark);padding-block:52px 64px}
+.hero .w{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+@media(max-width:860px){.hero .w{grid-template-columns:minmax(0,1fr)}}
+.to{font-size:14px;opacity:.75}
+.hero h1{font-size:clamp(28px,4.6vw,50px);font-weight:900;line-height:1.2;margin:14px 0 0;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--acc)}
+.hero .intro{font-size:17px;opacity:.88;margin:18px 0 0;max-width:540px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.cats span{border-radius:999px;padding:3px 13px;font-size:13px;font-weight:700;background:color-mix(in srgb,var(--c) 28%,transparent);color:var(--on-dark);border:1px solid var(--c)}
+.chat{background:rgba(255,255,255,.07);border-radius:18px;padding:16px;font-size:14px;min-width:0}
+.chat h3{font-size:13px;font-weight:700;opacity:.7;margin-bottom:10px}
+.bub{max-width:88%;padding:7px 12px;border-radius:14px;margin:6px 0;line-height:1.5}
+.bub.me{background:#85e27b;color:#111;margin-left:auto;border-bottom-right-radius:4px}
+.bub.sh{background:var(--card);color:var(--ink);border-bottom-left-radius:4px}
+.bub small{display:block;opacity:.6;font-size:11px}
+.chat hr{border:0;border-top:1px dashed rgba(255,255,255,.25);margin:12px 0}
+.chat .after{color:#ffd9e4;font-size:13px;font-weight:700}
+.head{margin-bottom:28px}.head p{color:var(--mut);margin:10px 0 0;max-width:680px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:0;background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:12px;overflow:hidden}
+@media(max-width:820px){.row{grid-template-columns:minmax(0,1fr)}}
+.row>div{padding:18px 20px}
+.row .bad{background:color-mix(in srgb,var(--bad) 7%,var(--card));border-right:1px solid var(--line)}
+@media(max-width:820px){.row .bad{border-right:0;border-bottom:1px solid var(--line)}}
+.row h3{font-size:14px;font-weight:800;margin-bottom:6px;display:flex;gap:6px;align-items:center}
+.row .bad h3{color:var(--bad)}.row .good h3{color:var(--ok)}
+.row p{margin:0;font-size:15px}
+.row .go{display:flex;align-items:center;background:var(--soft)}
+@media(max-width:820px){.row .go{padding-top:12px;padding-bottom:12px}}
+.row .num{font-size:12px;color:var(--mut);font-weight:700}
+.alt{background:var(--card)}
+.roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:820px){.roles{grid-template-columns:minmax(0,1fr)}}
+.role{background:var(--bg);border-radius:16px;padding:20px;border-top:6px solid var(--c)}
+.role h3{font-size:18px;margin-bottom:6px}.role p{margin:0;color:var(--mut);font-size:15px}
+.role a{display:inline-block;margin-top:10px;font-weight:800;color:var(--acc)}
+.order{counter-reset:o;list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.order li{counter-increment:o;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px 60px;position:relative;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.order li::before{content:counter(o);position:absolute;left:14px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--acc);color:var(--on-acc);font-weight:900;display:flex;align-items:center;justify-content:center}
+.order .tx{flex:1;min-width:200px}.order b{display:block}.order span.t{color:var(--mut);font-size:14px}
+.note{font-size:13px;color:var(--mut);margin-top:14px}
+.contact{background:var(--acc);color:var(--on-acc)}
+.contact .w{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}
+@media(max-width:820px){.contact .w{grid-template-columns:minmax(0,1fr)}}
+.contact p{margin:12px 0 0;font-size:17px}
+.lineadd{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--lineg);color:#fff;text-decoration:none;padding:16px 20px;border-radius:14px;font-weight:900;font-size:18px}
+.lineadd small{display:block;font-weight:500;font-size:13px}
+footer{background:var(--dark);color:var(--on-dark);font-size:13px;padding-block:22px;opacity:.95}
+footer a{color:#ffb6cb}
+</style>
+</head>
+<body>
+<nav><div class="w"><span class="mk">美業預約與會員關係系統</span><span class="sp"></span><a class="btn s" href="demo/index.html#book">直接試玩 →</a></div></nav>
+
+<header class="hero"><div class="w">
+  <div>
+    <div class="to">給美髮、美甲、美睫、美容的店老闆</div>
+    <h1>客人傳「明天下午有空嗎」，<br>你手上還在<em>做客人的頭</em>。</h1>
+    <p class="intro">讓客人自己選項目、設計師和時段，系統依服務時長排，原則上不會撞時段。爽約提醒、設計師請假改約、回訪、儲值扣次、月底抽成，也都交給系統。</p>
+    <div class="cats"><span style="--c:var(--hair)">美髮</span><span style="--c:var(--nail)">美甲</span><span style="--c:var(--lash)">美睫</span><span style="--c:var(--skin)">美容</span></div>
+    <div class="cta"><a class="btn" href="demo/index.html#auto">▶ 看一鍵示範：設計師請假</a><a class="btn o" href="demo/index.html#book">我來試著預約</a></div>
+  </div>
+  <div class="chat" aria-label="傳統做法與系統做法對照">
+    <h3>以前的 LINE</h3>
+    <div class="bub me">明天下午有空嗎？想補睫<small>14:02</small></div>
+    <div class="bub sh">（老闆正在做另一位客人，沒辦法看手機）<small>……3 小時後才回：「幾點？」</small></div>
+    <div class="bub me">那後天呢？<small>17:20</small></div>
+    <hr>
+    <h3>用系統之後</h3>
+    <div class="after">客人點「預約」→ 選補睫 → 選 Luna → 看到明天真的有空的時段 → 一鍵送出。老闆全程不用回訊息。</div>
+  </div>
+</div></header>
+
+<section><div class="w">
+  <div class="head"><h2>傳統做法的痛點 vs. 用系統的優化方案</h2><p>每一列都可以按右邊的按鈕，直接到示範裡看同一件事怎麼處理。示範為虛構店家「示範美學館」，全部是假資料。</p></div>
+
+  <div class="row"><div class="bad"><div class="num">01 預約</div><h3>✕ 傳統做法</h3><p>客人 LINE 問「明天下午有空嗎」，老闆一邊做一邊回，來回好幾輪才定下來，還可能排到重疊的時段。</p></div>
+   <div class="good"><div class="num">&nbsp;</div><h3>✓ 用系統</h3><p>客人自己選項目、設計師、時段。系統依「設計師 × 時間 × 服務時長」排，染髮 150 分鐘就占 150 分鐘，只顯示真的空的時段。</p></div>
+   <div class="go"><a class="btn s" href="demo/index.html#book">試預約 →</a></div></div>
+
+  <div class="row"><div class="bad"><div class="num">02 爽約與遲到</div><h3>✕ 傳統做法</h3><p>客人忘記或臨時不來，空出一整段時間才發現；要提醒得自己一個個傳。</p></div>
+   <div class="good"><div class="num">&nbsp;</div><h3>✓ 用系統</h3><p>前一天、當天自動提醒，客人一鍵「確認出席」或「改期」。原則上能提早知道哪些時段會空出來。</p></div>
+   <div class="go"><a class="btn s" href="demo/index.html#grid">看提醒 →</a></div></div>
+
+  <div class="row"><div class="bad"><div class="num">03 請假改約</div><h3>✕ 傳統做法</h3><p>設計師臨時請假，老闆要翻本子，一個個打電話、傳訊息問客人改哪天。</p></div>
+   <div class="good"><div class="num">&nbsp;</div><h3>✓ 用系統</h3><p>設計師按請假，系統列出受影響的客人，自動通知並附上可選的新時段，客人自己點選就改好。</p></div>
+   <div class="go"><a class="btn s" href="demo/index.html#auto">一鍵示範 →</a></div></div>
+
+  <div class="row"><div class="bad"><div class="num">04 回訪</div><h3>✕ 傳統做法</h3><p>客人做完就沒回來，過了很久才想到「她是不是該補染了」，但沒時間一個個找。</p></div>
+   <div class="good"><div class="num">&nbsp;</div><h3>✓ 用系統</h3><p>依項目週期自動提醒回訪：補染約 6 週、補睫約 3 週、凝膠甲約 3～4 週。每個項目的週期都能自己設定。</p></div>
+   <div class="go"><a class="btn s" href="demo/index.html#recall">看回訪名單 →</a></div></div>
+
+  <div class="row"><div class="bad"><div class="num">05 儲值與套票</div><h3>✕ 傳統做法</h3><p>儲值、套票靠紙本或 Excel 記，客人問「我還剩幾次」要翻半天，還可能算錯。</p></div>
+   <div class="good"><div class="num">&nbsp;</div><h3>✓ 用系統</h3><p>結帳時依套票、儲值金自動扣次、扣額，客人自己在 LINE 查餘額，雙方對得上。</p></div>
+   <div class="go"><a class="btn s" href="demo/index.html#stored">看儲值扣款 →</a></div></div>
+
+  <div class="row"><div class="bad"><div class="num">06 月結</div><h3>✕ 傳統做法</h3><p>月底手動加總每位設計師的業績，再逐筆算抽成；指定單、不同項目比例不同，容易算到眼花。</p></div>
+   <div class="good"><div class="num">&nbsp;</div><h3>✓ 用系統</h3><p>依服務項目與「客人是否指定設計師」自動算業績與抽成，比例在設定檔裡改，月底一頁看完。</p></div>
+   <div class="go"><a class="btn s" href="demo/index.html#payroll">看月結 →</a></div></div>
+
+  <div class="row"><div class="bad"><div class="num">07 空檔（選配）</div><h3>✕ 傳統做法</h3><p>平日下午空了一兩個小時，只能在 IG 隨手貼「今天有空檔」，不見得有人看到。</p></div>
+   <div class="good"><div class="num">&nbsp;</div><h3>✓ 用系統（選配）</h3><p>找出連續空檔，挑出週期快到的適合熟客，推一則限時空檔優惠，先搶先贏；發送前由老闆確認名單。</p></div>
+   <div class="go"><a class="btn s" href="demo/index.html#gap">看空檔推播 →</a></div></div>
+  <p class="note">以上為功能說明，實際效果原則上會因店家的客群與使用習慣而不同，不代表任何保證。</p>
+</div></section>
+
+<section class="alt"><div class="w">
+  <div class="head"><h2>客人、設計師、老闆，各看各的畫面</h2><p>客人不用下載 App，在 LINE 裡就能預約；設計師看自己的班表；老闆看總表。</p></div>
+  <div class="roles">
+    <div class="role" style="--c:var(--nail)"><h3>客人（手機 LINE）</h3><p>選項目、選設計師、挑時段、收提醒、查儲值金與套票餘額。</p><a href="demo/index.html#book">試著預約 →</a></div>
+    <div class="role" style="--c:var(--lash)"><h3>設計師</h3><p>看今日與本週預約，臨時請假或改時段，系統自動通知受影響的客人。</p><a href="demo/index.html#leave">試著請假 →</a></div>
+    <div class="role" style="--c:var(--hair)"><h3>老闆／櫃台</h3><p>預約總表、回訪名單、儲值套票、月結抽成、空檔推播，一個畫面管理。</p><a href="demo/index.html#grid">看預約總表 →</a></div>
+  </div>
+</div></section>
+
+<section><div class="w">
+  <div class="head"><h2>3 分鐘看完的順序</h2></div>
+  <ol class="order">
+    <li><div class="tx"><b>先當一次客人（約 40 秒）</b><span class="t">選補睫或剪髮，選設計師，挑時段，看預約成功卡片。</span></div><a class="btn s" href="demo/index.html#book">去預約 →</a></li>
+    <li><div class="tx"><b>按「▶ 一鍵示範：設計師請假」（約 40 秒）</b><span class="t">看請假、找出 3 位受影響客人、自動通知、客人選新時段、總表更新。</span></div><a class="btn s" href="demo/index.html#auto">開始 →</a></li>
+    <li><div class="tx"><b>看回訪提醒（約 30 秒）</b><span class="t">週期到了的客人一目了然，一鍵送提醒；週期可以自己改。</span></div><a class="btn s" href="demo/index.html#recall">去看 →</a></li>
+    <li><div class="tx"><b>看儲值扣款與月結（約 60 秒）</b><span class="t">在預約總表點一筆預約按「結帳」，看餘額自動扣；再到月結看抽成。</span></div><a class="btn s" href="demo/index.html#stored">去看 →</a></li>
+  </ol>
+  <p class="note">示範裡所有「發送 LINE」都只在頁面內模擬，不會真的傳給任何人；店名、設計師、客人、電話都是虛構資料。</p>
+</div></section>
+
+<section class="contact"><div class="w">
+  <div><h2>需要客製化？</h2><p>項目、時長、設計師、營業時間、抽成比例、回訪週期，都可以依你的店調整。加 LINE 聊聊你店裡現在最頭痛的事。</p></div>
+  <a class="lineadd" href="https://line.me/R/ti/p/@812ibtir" target="_blank" rel="noopener"><span>需要客製化？加 LINE<small>@812ibtir（留白事務所，林其衞）</small></span><span>→</span></a>
+</div></section>
+
+<footer><div class="w">示範內容中的店家、設計師、客人與電話皆為虛構。　需要客製化？加 LINE <a href="https://line.me/R/ti/p/@812ibtir" target="_blank" rel="noopener">@812ibtir</a>（留白事務所，林其衞）</div></footer>
+</body>
+</html>

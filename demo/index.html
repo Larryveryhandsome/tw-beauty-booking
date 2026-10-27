@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>美業預約與會員系統｜可操作示範</title>
+<meta name="color-scheme" content="light dark">
+<style>
+:root{
+ color-scheme:light;
+ --bg:#f8f3f1;--card:#fff;--ink:#2a2029;--mut:#7a6d76;--line:#eadfe0;--soft:#f6e7ea;
+ --acc:#b0476a;--on-acc:#fff;--ok:#2a7d52;--warn:#a96a12;--bad:#c1393f;--lineg:#06c755;
+ --hair:#7e5bb0;--nail:#d6577d;--lash:#2b8580;--skin:#b07c28;
+ --phone:#c9d4e6;--hatch:#efe4e6;--past:#f1ebea;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ color-scheme:dark;
+ --bg:#17121a;--card:#231c26;--ink:#f1e8ee;--mut:#ab9ca6;--line:#3b2f3e;--soft:#34232e;
+ --acc:#e47ea0;--on-acc:#1c1018;--ok:#5cc58c;--warn:#e0a24d;--bad:#ff7b80;
+ --hair:#ab8ddb;--nail:#f28fae;--lash:#55b9b2;--skin:#dcab5c;
+ --phone:#2a3040;--hatch:#2d2431;--past:#1d1720;}}
+:root[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#17121a;--card:#231c26;--ink:#f1e8ee;--mut:#ab9ca6;--line:#3b2f3e;--soft:#34232e;
+ --acc:#e47ea0;--on-acc:#1c1018;--ok:#5cc58c;--warn:#e0a24d;--bad:#ff7b80;
+ --hair:#ab8ddb;--nail:#f28fae;--lash:#55b9b2;--skin:#dcab5c;
+ --phone:#2a3040;--hatch:#2d2431;--past:#1d1720;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;padding-bottom:84px}
+button{font:inherit;color:inherit}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 8px;max-width:100%}
+.c-hair{--c:var(--hair)}.c-nail{--c:var(--nail)}.c-lash{--c:var(--lash)}.c-skin{--c:var(--skin)}
+header{position:sticky;top:0;z-index:30;background:var(--card);border-bottom:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-left,0px)) 10px max(16px,env(safe-area-inset-right,0px));padding-top:max(10px,env(safe-area-inset-top,0px))}
+.hrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;max-width:1280px;margin:auto}
+.logo{font-weight:800;color:var(--acc);font-size:16px}
+.logo small{display:block;font-weight:400;color:var(--mut);font-size:11px}
+.roles{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.roles button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:600}
+.roles button.on{background:var(--acc);color:var(--on-acc);border-color:var(--acc)}
+.roles .auto{background:var(--lineg);color:#fff;border-color:var(--lineg)}
+.roles .rst{color:var(--mut)}
+.notice{background:var(--soft);color:var(--mut);font-size:12px;padding:6px max(16px,env(safe-area-inset-left,0px));text-align:center}
+.page{max-width:1280px;margin:auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 16px max(16px,env(safe-area-inset-right,0px))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;min-width:0}
+.card h3{margin:0 0 8px;font-size:15px}
+.mut{color:var(--mut)}.sm{font-size:12px}
+.btn{border:0;border-radius:9px;padding:8px 14px;cursor:pointer;font-weight:700;background:var(--acc);color:var(--on-acc)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.g{background:var(--lineg);color:#fff}
+.btn.red{background:var(--bad);color:#fff}
+.btn.s{padding:4px 10px;font-size:12px;border-radius:7px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.pills button{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer}
+.pills button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.kpi b{font-size:22px;display:block;font-variant-numeric:tabular-nums}.kpi span{color:var(--mut);font-size:12px}
+.tw{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{color:var(--mut);font-weight:600;white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:600;background:var(--soft);color:var(--ink);white-space:nowrap}
+.tag.ok{background:color-mix(in srgb,var(--ok) 18%,var(--card));color:var(--ok)}
+.tag.warn{background:color-mix(in srgb,var(--warn) 18%,var(--card));color:var(--warn)}
+.tag.bad{background:color-mix(in srgb,var(--bad) 16%,var(--card));color:var(--bad)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c,var(--acc));margin-right:5px}
+/* 客人：手機 */
+.cust{display:grid;grid-template-columns:minmax(0,1fr) 375px;gap:20px;align-items:start}
+@media(max-width:900px){.cust{grid-template-columns:minmax(0,1fr)}.cust .phonecol{order:-1}}
+.phone{width:375px;max-width:100%;margin:auto;background:#1b1b1f;border-radius:38px;padding:10px;box-shadow:0 0 0 1px var(--line)}
+@media(max-width:420px){.phone{border-radius:0;padding:0;background:none;box-shadow:none}}
+.scr{background:var(--phone);border-radius:30px;height:640px;display:flex;flex-direction:column;overflow:hidden;position:relative}
+@media(max-width:420px){.scr{border-radius:14px;height:calc(100vh - 150px);min-height:520px}}
+.scr .top{background:var(--card);padding:12px 16px 9px;font-weight:700;font-size:14px;border-bottom:1px solid var(--line)}
+.scr .top small{display:block;color:var(--mut);font-weight:400;font-size:11px}
+.scr .body{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.tabbar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:1px solid var(--line)}
+.tabbar button{border:0;background:none;padding:9px 2px 8px;cursor:pointer;font-size:12px;color:var(--mut);position:relative}
+.tabbar button.on{color:var(--acc);font-weight:800}
+.tabbar b{position:absolute;top:3px;right:18%;background:var(--bad);color:#fff;border-radius:999px;font-size:10px;min-width:16px;padding:0 4px;line-height:16px}
+.sec{background:var(--card);border-radius:14px;padding:12px}
+.sec h4{margin:0 0 8px;font-size:14px}
+.steps{display:flex;gap:4px;margin-bottom:2px}
+.steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}.steps i.on{background:var(--acc)}
+.opt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c,var(--acc));border-radius:11px;padding:10px 12px;cursor:pointer;margin-top:7px}
+.opt:hover{border-color:var(--acc);border-left-color:var(--c,var(--acc))}
+.opt .gx{flex:1;min-width:0}.opt b{display:block}.opt small{color:var(--mut)}
+.opt .pr{font-weight:800;font-variant-numeric:tabular-nums}
+.av{width:38px;height:38px;border-radius:50%;background:var(--soft);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 9px;text-align:center;cursor:pointer;font-size:12px;min-width:62px}
+.chip b{display:block;font-size:14px}.chip.on{background:var(--acc);color:var(--on-acc);border-color:var(--acc)}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.slot{border:1px solid var(--line);background:var(--card);border-radius:9px;padding:8px 0;cursor:pointer;font-weight:700;font-variant-numeric:tabular-nums}
+.slot:hover{border-color:var(--acc)}.slot.on{background:var(--acc);color:var(--on-acc);border-color:var(--acc)}
+.rowkv{display:flex;gap:8px;padding:4px 0;font-size:13px}.rowkv span:first-child{width:62px;color:var(--mut);flex:none}.rowkv span:last-child{flex:1;min-width:0;overflow-wrap:anywhere}
+/* LINE 卡片 */
+.fx{background:var(--card);border-radius:16px;overflow:hidden;width:96%;font-size:13px;box-shadow:0 1px 0 var(--line);min-width:0}
+.fx .fh{background:var(--soft);padding:12px 14px 9px;border-left:5px solid var(--acc)}
+.fx.warn .fh{border-left-color:var(--warn)}.fx.ok .fh{border-left-color:var(--ok)}
+.fx .br{font-size:10px;font-weight:700;color:var(--mut);letter-spacing:.08em}
+.fx .kk{font-size:11px;font-weight:700;margin-top:5px;color:var(--acc)}.fx.warn .kk{color:var(--warn)}.fx.ok .kk{color:var(--ok)}
+.fx .tt{font-size:15px;font-weight:800;margin-top:2px;overflow-wrap:anywhere}
+.fx .fb{padding:10px 14px;line-height:1.55;overflow-wrap:anywhere}
+.fx .ff{padding:0 12px 12px;display:flex;flex-direction:column;gap:6px}
+.fx .ff button{border:1px solid var(--line);background:var(--soft);border-radius:9px;padding:8px;font-weight:700;cursor:pointer}
+.fx .ff button.pri{background:var(--acc);color:var(--on-acc);border-color:var(--acc)}
+.fx .res{padding:0 14px 12px;color:var(--ok);font-weight:700}
+.fx .time{font-size:10px;color:var(--mut);padding:0 14px 8px;text-align:right}
+.wbig{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.pack{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}.pack i{width:18px;height:18px;border-radius:50%;border:2px solid var(--acc);display:inline-block}.pack i.f{background:var(--acc)}
+/* 設計師 */
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:820px){.two{grid-template-columns:minmax(0,1fr)}}
+.li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border:0}.li .tm{width:84px;flex:none;font-weight:800;font-variant-numeric:tabular-nums}
+.li .gx{flex:1;min-width:0;overflow-wrap:anywhere}
+.fld{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:9px}.fld label{width:70px;color:var(--mut)}
+/* 總表 */
+.gscroll{overflow-x:auto;max-width:100%;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.grid{display:grid;grid-template-columns:48px repeat(var(--cols),minmax(86px,1fr));grid-template-rows:34px repeat(var(--rows),30px);min-width:560px}
+.grid>div{border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-width:0}
+.gh{display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;background:var(--card);position:sticky;top:0;z-index:2}
+.gh small{font-weight:400;color:var(--mut);margin-left:4px;font-size:10px}
+.gt{font-size:10px;color:var(--mut);text-align:right;padding:2px 5px;font-variant-numeric:tabular-nums}
+.gc{background:var(--card)}.gc.off{background:repeating-linear-gradient(135deg,var(--hatch) 0 6px,transparent 6px 12px)}.gc.pst{background:var(--past)}
+.bk{margin:1px 2px;border-radius:8px;border:0;border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 20%,var(--card));padding:2px 6px;text-align:left;cursor:pointer;overflow:hidden;font-size:12px;line-height:1.3;z-index:1;color:var(--ink);border-bottom:0!important;border-right:0!important}
+.bk small{display:block;color:var(--mut);font-size:10px}
+.bk.pending{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--bad) 28%,var(--card)) 0 6px,color-mix(in srgb,var(--bad) 12%,var(--card)) 6px 12px);border-left-color:var(--bad)}
+.bk.done{opacity:.6}
+.bk.cancel{display:none}
+.lv{margin:1px 2px;border-radius:8px;background:repeating-linear-gradient(135deg,var(--hatch) 0 5px,color-mix(in srgb,var(--mut) 25%,var(--card)) 5px 10px);font-size:11px;color:var(--mut);padding:3px 6px;z-index:1;border-bottom:0!important}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:8px 0}
+/* 浮層 */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:none;align-items:center;justify-content:center;padding:16px}
+#modal.on{display:flex}
+.mbox{background:var(--card);border-radius:16px;padding:18px;width:min(460px,100%);max-height:88vh;overflow:auto}
+.mbox h3{margin:0 0 10px}.macts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+#banner{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--ink);color:var(--bg);padding:10px max(16px,env(safe-area-inset-left,0px)) max(10px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-right,0px));display:none}
+#banner.on{display:block}
+#banner .bi{max-width:1280px;margin:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#banner b{background:var(--acc);color:var(--on-acc);border-radius:999px;padding:1px 10px;white-space:nowrap}
+#banner span{flex:1;min-width:200px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);top:64px;background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;z-index:70;display:none;max-width:92vw;font-size:13px;text-align:center}
+#toast.on{display:block}
+.cta{margin:14px 0 4px;font-size:13px;color:var(--mut);text-align:center}
+.cta a{color:var(--acc);font-weight:800}
+.hl{outline:3px solid var(--acc);outline-offset:2px}
+.empty{padding:22px;text-align:center;color:var(--mut)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header><div class="hrow">
+  <div class="logo" id="shopLogo">示範美學館<small>預約與會員關係系統・可操作示範</small></div>
+  <div class="roles" role="tablist" aria-label="切換角色">
+    <button data-a="role" data-r="cust" id="r-cust">客人（手機 LINE）</button>
+    <button data-a="role" data-r="des" id="r-des">設計師</button>
+    <button data-a="role" data-r="owner" id="r-owner">老闆／櫃台</button>
+    <button class="auto" data-a="auto" id="btnAuto">▶ 一鍵示範：設計師請假</button>
+    <button class="rst" data-a="reset" id="btnReset" title="把所有資料還原成一開始的樣子">重置</button>
+  </div>
+</div></header>
+<div class="notice">全部是虛構的示範資料；所有「發送 LINE」只在這個頁面內模擬，不會真的傳給任何人。</div>
+<div class="page" id="app"></div>
+<div class="cta">需要客製化？加 LINE <a href="https://line.me/R/ti/p/@812ibtir" target="_blank" rel="noopener">@812ibtir</a>（留白事務所，林其衞）</div>
+<div id="modal" role="dialog" aria-modal="true"></div>
+<div id="banner" role="status" aria-live="polite"><div class="bi"><b id="bStep"></b><span id="bText"></span><button class="btn ghost s" data-a="autoStop">關閉</button></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+'use strict';
+var C=window.BEAUTY_CONFIG;
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var pad=function(n){return String(n).padStart(2,'0')};
+var tm=function(m){return pad(Math.floor(m/60))+':'+pad(m%60)};
+var pm=function(s){var a=s.split(':');return +a[0]*60+ +a[1]};
+var WD=['一','二','三','四','五','六','日'];
+var dlab=function(d){var t=new Date(C.weekStart[0],C.weekStart[1]-1,C.weekStart[2]+d);return (t.getMonth()+1)+'/'+t.getDate()+'（'+WD[((d%7)+7)%7]+'）'};
+var money=function(n){return 'NT$'+Math.round(n).toLocaleString('en-US')};
+var SPEED=/[?&]fast/.test(location.search)?0.08:1;
+var NDAYS=14;
+
+var S,U;
+function svc(id){return C.services.find(function(s){return s.id===id})}
+function des(id){return C.designers.find(function(s){return s.id===id})}
+function cust(id){return S.customers.find(function(s){return s.id===id})}
+function pack(id){return C.packs.find(function(s){return s.id===id})}
+function bk(id){return S.bookings.find(function(s){return s.id===id})}
+function catOf(sid){return svc(sid).cat}
+function hrs(d){var h=C.hours[((d%7)+7)%7];if(!h||h==='休')return null;var a=h.split('-');return [pm(a[0]),pm(a[1])]}
+function active(b){return b.status!=='cancel'}
+
+function fresh(){
+  S={seq:100,clock:C.nowMin,customers:JSON.parse(JSON.stringify(C.customers)),bookings:[],leaves:[],msgs:[],ledger:[],sales:[],
+     cycles:{},reminded:{},gapSent:{},log:[]};
+  C.services.forEach(function(s){S.cycles[s.id]=s.cycle});
+  C.bookings.trim().split('\n').forEach(function(line){
+    var p=line.split('|');var sv=svc(p[3]);
+    S.bookings.push({id:'b'+(++S.seq),day:+p[0],des:p[1],start:pm(p[2]),dur:sv.dur,svc:p[3],cust:p[4],req:p[5]==='1',price:sv.price,note:'',status:p[6]||'booked'});
+  });
+  C.history.trim().split('\n').forEach(function(line){
+    var p=line.split('|');var sv=svc(p[1]);var n=+p[2],r=+p[3];
+    S.sales.push({des:p[0],svc:p[1],n:n-r,req:false,amt:(n-r)*sv.price});
+    S.sales.push({des:p[0],svc:p[1],n:r,req:true,amt:r*sv.price});
+  });
+}
+function freshUI(){
+  U={role:'cust',persona:'c1',tab:'book',step:1,svc:null,des:null,day:null,start:null,note:'',okId:null,
+     oTab:'grid',gridDay:C.todayIdx,dSel:C.demo.leaveDesigner,
+     leave:{day:C.demo.leaveDay,preset:'full',from:pm('14:00'),to:pm('18:00')},
+     reschedFor:null,modal:null,auto:false,stop:false};
+}
+
+/* ---------- 排程核心：設計師 × 時間 × 服務時長 ---------- */
+function isFree(did,d,st,dur,ign){
+  var h=hrs(d);if(!h)return false;
+  var D=des(did);if(D.off.indexOf(((d%7)+7)%7)>=0)return false;
+  if(st<h[0]||st+dur>h[1])return false;
+  if(d<C.todayIdx||(d===C.todayIdx&&st<C.nowMin))return false;
+  for(var i=0;i<S.bookings.length;i++){var b=S.bookings[i];
+    if(!active(b)||b.id===ign||b.des!==did||b.day!==d)continue;
+    if(st<b.start+b.dur&&b.start<st+dur)return false}
+  for(var j=0;j<S.leaves.length;j++){var l=S.leaves[j];
+    if(l.des!==did||l.day!==d)continue;
+    if(st<l.to&&l.from<st+dur)return false}
+  return true;
+}
+function qualified(sv){return C.designers.filter(function(x){return x.cats.indexOf(sv.cat)>=0})}
+function load(did,d){return S.bookings.filter(function(b){return active(b)&&b.des===did&&b.day===d}).reduce(function(a,b){return a+b.dur},0)}
+function slotsFor(sv,desId,d,ign){
+  var h=hrs(d),out=[];if(!h)return out;
+  for(var st=h[0];st+sv.dur<=h[1];st+=C.step){
+    var cands=(desId==='any'?qualified(sv):[des(desId)]).filter(function(x){return isFree(x.id,d,st,sv.dur,ign)});
+    if(cands.length){cands.sort(function(a,b){return load(a.id,d)-load(b.id,d)});out.push({start:st,des:cands[0].id})}
+  }
+  return out;
+}
+function allFree(sv,d,ign){
+  var h=hrs(d),out=[];if(!h)return out;
+  qualified(sv).forEach(function(x){for(var st=h[0];st+sv.dur<=h[1];st+=C.step){if(isFree(x.id,d,st,sv.dur,ign))out.push({start:st,des:x.id})}});
+  return out;
+}
+function nextSlot(sv,desId){
+  for(var d=C.todayIdx;d<C.todayIdx+NDAYS;d++){var s=slotsFor(sv,desId,d);if(s.length)return {day:d,start:s[0].start}}
+  return null;
+}
+function addBooking(o){
+  var sv=svc(o.svc);
+  var b={id:'b'+(++S.seq),day:o.day,des:o.des,start:o.start,dur:sv.dur,svc:o.svc,cust:o.cust,req:!!o.req,price:o.price==null?sv.price:o.price,note:o.note||'',status:'booked'};
+  S.bookings.push(b);return b;
+}
+function moveB(bid,d,st,did){
+  var b=bk(bid);if(!b||!isFree(did,d,st,b.dur,b.id))return false;
+  if(did!==b.des)b.req=false;
+  b.day=d;b.start=st;b.des=did;b.status='booked';delete b.pend;return true;
+}
+function reschedOpts(bid){
+  var b=bk(bid),sv=svc(b.svc),res=[];
+  for(var d=Math.max(C.todayIdx,b.day);d<Math.max(C.todayIdx,b.day)+8&&res.length<4;d++){
+    var l=allFree(sv,d,b.id).filter(function(x){return !(d===b.day&&x.start===b.start&&x.des===b.des)});
+    if(!l.length)continue;
+    l.sort(function(x,y){return Math.abs(x.start-b.start)-Math.abs(y.start-b.start)||((x.des===b.des?0:1)-(y.des===b.des?0:1))});
+    res.push({day:d,start:l[0].start,des:l[0].des});
+  }
+  return res;
+}
+/* ---------- 訊息（模擬 LINE） ---------- */
+function send(cid,m){
+  S.clock+=1;
+  var msg=Object.assign({id:'m'+(++S.seq),cust:cid,t:'今天 '+tm(S.clock),done:false,result:''},m);
+  S.msgs.push(msg);return msg;
+}
+function inbox(cid){return S.msgs.filter(function(m){return m.cust===cid})}
+function unread(cid){return inbox(cid).filter(function(m){return !m.done&&(m.resched||(m.acts&&m.acts.length))}).length}
+function payPlan(c,sid,price){
+  var pk=c.packs.find(function(p){return p.left>0&&pack(p.pid).svcIds.indexOf(sid)>=0});
+  if(pk)return {type:'pack',pk:pk};
+  if(c.stored>=price)return {type:'stored'};
+  return {type:'cash'};
+}
+function payText(c,sid,price){
+  var p=payPlan(c,sid,price);
+  if(p.type==='pack')return '用套票扣 1 次（'+pack(p.pk.pid).name+'，剩 '+p.pk.left+' 次）';
+  if(p.type==='stored')return '儲值金扣 '+money(price)+'（餘額 '+money(c.stored)+'）';
+  return '現場付款 '+money(price);
+}
+function checkout(bid){
+  var b=bk(bid),c=cust(b.cust),sv=svc(b.svc),p=payPlan(c,b.svc,b.price),line;
+  if(p.type==='pack'){p.pk.left--;line=sv.name+' 扣套票 1 次（'+pack(p.pk.pid).name+'剩 '+p.pk.left+' 次）'}
+  else if(p.type==='stored'){c.stored-=b.price;line=sv.name+' 扣儲值金 '+money(b.price)+'（餘額 '+money(c.stored)+'）'}
+  else line=sv.name+' 現場付款 '+money(b.price);
+  S.ledger.unshift({cust:c.id,text:line});
+  b.status='done';c.last[b.svc]=0;
+  S.sales.push({des:b.des,svc:b.svc,n:1,req:b.req,amt:b.price});
+  send(c.id,{kind:'消費明細',tone:'ok',title:'謝謝光臨，'+sv.name,rows:[['設計師',des(b.des).name],['金額',money(b.price)],['付款',line.replace(sv.name+' ','')]],text:'下次建議約 '+S.cycles[b.svc]+' 天後回來保養。'});
+  return line;
+}
+/* ---------- 請假 → 受影響客人 → 改約 ---------- */
+function affectedBy(did,d,from,to){
+  return S.bookings.filter(function(b){return b.des===did&&b.day===d&&b.status==='booked'&&b.start<to&&from<b.start+b.dur});
+}
+function applyLeave(did,d,from,to){
+  var aff=affectedBy(did,d,from,to);var id='l'+(++S.seq);
+  S.leaves.push({id:id,des:did,day:d,from:from,to:to});
+  aff.forEach(function(b){b.status='pending';b.pend=id});
+  return aff;
+}
+function notifyAffected(list){
+  list.forEach(function(b){
+    var sv=svc(b.svc),D=des(b.des);
+    send(b.cust,{kind:'改約通知',tone:'warn',title:dlab(b.day)+' '+tm(b.start)+' '+sv.name,
+      rows:[['原設計師',D.name],['原時段',dlab(b.day)+' '+tm(b.start)+'–'+tm(b.start+b.dur)]],
+      text:D.name+' 臨時請假，真的很抱歉。請直接選一個新時段，不用來回傳訊息。',resched:b.id});
+  });
+}
+/* ---------- 回訪、業績 ---------- */
+function recallList(){
+  var out=[];
+  S.customers.forEach(function(c){Object.keys(c.last).forEach(function(sid){
+    var ago=c.last[sid],cyc=S.cycles[sid],left=cyc-ago;
+    if(left>C.recallLead)return;
+    if(S.bookings.some(function(b){return (b.status==='booked'||b.status==='pending')&&b.cust===c.id&&b.svc===sid}))return;
+    out.push({c:c,sid:sid,ago:ago,cyc:cyc,left:left,sent:!!S.reminded[c.id+'|'+sid]});
+  })});
+  out.sort(function(a,b){return a.left-b.left});return out;
+}
+function payroll(){
+  var rows=C.designers.map(function(D){return {D:D,rev:0,n:0,req:0,comm:0,by:{}}});
+  S.sales.forEach(function(s){
+    if(!s.n)return;var r=rows.find(function(x){return x.D.id===s.des}),sv=svc(s.svc);
+    var rate=C.commission[sv.cat]+(s.req?C.commission.requestBonus:0);
+    r.rev+=s.amt;r.n+=s.n;if(s.req)r.req+=s.n;r.comm+=s.amt*rate;
+    var k=C.categories[sv.cat].name;r.by[k]=(r.by[k]||0)+s.amt*rate;
+  });
+  return rows;
+}
+function gaps(){
+  var out=[];
+  for(var d=C.todayIdx;d<=C.todayIdx+2;d++){C.designers.forEach(function(D){
+    var h=hrs(d);if(!h)return;var st=h[0],run=null;
+    for(var t=h[0];t<=h[1];t+=C.step){
+      var free=t<h[1]&&isFree(D.id,d,t,C.step);
+      if(free&&run===null)run=t;
+      if(!free&&run!==null){if(t-run>=60)out.push({D:D,day:d,from:run,to:t,key:D.id+'|'+d+'|'+run});run=null}
+    }
+  })}
+  return out;
+}
+function gapTargets(g){
+  var seen={},res=[];
+  recallList().forEach(function(r){
+    var sv=svc(r.sid);
+    if(g.D.cats.indexOf(sv.cat)<0||sv.dur>g.to-g.from||seen[r.c.id])return;
+    seen[r.c.id]=1;res.push(r);
+  });
+  return res.slice(0,4);
+}
+
+/* ---------- 畫面 ---------- */
+function toast(t){var e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove('on')},2600*Math.max(SPEED,.4))}
+function banner(step,text){$('#banner').classList.add('on');$('#bStep').textContent=step;$('#bText').textContent=text}
+function card(m){
+  var acts='';
+  if(m.done)acts='<div class="res">✔ '+esc(m.result)+'</div>';
+  else if(m.resched){
+    var o=reschedOpts(m.resched);
+    acts='<div class="ff">'+(o.length?o.map(function(x){return '<button class="pri" data-a="move" data-b="'+m.resched+'" data-d="'+x.day+'" data-s="'+x.start+'" data-x="'+x.des+'" data-m="'+m.id+'">'+esc(dlab(x.day)+' '+tm(x.start)+'・'+des(x.des).name)+'</button>'}).join(''):'<div class="mut">目前週內沒有適合的空檔</div>')+'<button data-a="callme" data-m="'+m.id+'">都不方便，請店家聯絡我</button></div>';
+  } else if(m.acts&&m.acts.length){
+    acts='<div class="ff">'+m.acts.map(function(a){return '<button class="'+(a.pri?'pri':'')+'" data-a="'+a.a+'" data-arg="'+esc(a.arg||'')+'" data-m="'+m.id+'">'+esc(a.l)+'</button>'}).join('')+'</div>';
+  }
+  return '<div class="fx '+(m.tone||'')+'"><div class="fh"><div class="br">'+esc(C.shopName)+'</div><div class="kk">'+esc(m.kind)+'</div><div class="tt">'+esc(m.title)+'</div></div><div class="fb">'+
+   (m.rows||[]).map(function(r){return '<div class="rowkv"><span>'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></div>'}).join('')+(m.text?'<div style="margin-top:4px">'+esc(m.text).replace(/\n/g,'<br>')+'</div>':'')+'</div>'+acts+'<div class="time">'+esc(m.t)+'</div></div>';
+}
+function bkRow(b,own){
+  var sv=svc(b.svc),st={booked:'已預約',pending:'待改約',done:'已完成',cancel:'已取消'}[b.status];
+  return '<div class="li"><div class="tm">'+tm(b.start)+'<br><small class="mut">'+tm(b.start+b.dur)+'</small></div><div class="gx"><span class="dot c-'+sv.cat+'"></span><b>'+esc(sv.name)+'</b> '+(own?'':'· '+esc(cust(b.cust).name)+(b.req?' <span class="tag">指定</span>':''))+'<br><span class="mut sm">'+(own?esc(des(b.des).name)+'・'+dlab(b.day):esc(cust(b.cust).phone))+(b.note?'・備註：'+esc(b.note):'')+'</span></div><span class="tag '+(b.status==='pending'?'bad':b.status==='done'?'ok':'')+'">'+st+'</span></div>';
+}
+
+function renderCust(){
+  var c=cust(U.persona);var t=U.tab,body='';
+  if(t==='book')body=bookBody(c);
+  else if(t==='mine')body=mineBody(c);
+  else if(t==='wallet')body=walletBody(c);
+  else body=inboxBody(c);
+  var un=unread(c.id);
+  var left='<div><div class="card"><h3>你正在以「'+esc(c.name)+'」的身份試玩</h3><div class="fld"><label for="persona">切換客人</label><select id="persona" data-ch="persona">'+S.customers.map(function(x){return '<option value="'+x.id+'"'+(x.id===c.id?' selected':'')+'>'+esc(x.name)+'</option>'}).join('')+'</select></div><div class="mut sm">右邊是客人在 LINE 裡看到的畫面。預約完成後，切到「老闆／櫃台」的預約總表，會看到同一筆預約出現，那個時段也不會再被別人選到。</div></div>'+
+   '<div class="card"><h3>可以試試看</h3><ol style="margin:0;padding-left:20px"><li>點「預約」，選項目、設計師，只會看到真的有空的時段</li><li>點「餘額」查儲值金與套票</li><li>點「訊息」看店家傳來的提醒與改約通知</li><li>回到頂部按「▶ 一鍵示範：設計師請假」</li></ol></div></div>';
+  var phone='<div class="phonecol"><div class="phone"><div class="scr"><div class="top">'+esc(C.shopName)+'<small>官方帳號・線上預約</small></div><div class="body" id="phoneBody">'+body+'</div><div class="tabbar">'+
+   [['book','預約'],['mine','我的預約'],['wallet','餘額'],['msgs','訊息']].map(function(x){return '<button data-a="ctab" data-t="'+x[0]+'" class="'+(t===x[0]?'on':'')+'">'+x[1]+(x[0]==='msgs'&&un?'<b>'+un+'</b>':'')+'</button>'}).join('')+'</div></div></div></div>';
+  return '<div class="cust">'+left+phone+'</div>';
+}
+function bookBody(c){
+  var st=U.step,steps='<div class="steps">'+[1,2,3,4].map(function(i){return '<i class="'+(i<=Math.min(st,4)?'on':'')+'"></i>'}).join('')+'</div>';
+  var back=st>1&&st<5?'<button class="btn ghost s" data-a="back" style="align-self:flex-start">← 上一步</button>':'';
+  if(st===1){
+    var h=steps+'<div class="sec"><h4>① 想做哪個項目？</h4>';
+    Object.keys(C.categories).forEach(function(k){
+      h+='<div class="mut sm" style="margin-top:8px">'+esc(C.categories[k].name)+'</div>';
+      C.services.filter(function(s){return s.cat===k}).forEach(function(s){
+        h+='<button class="opt c-'+k+'" data-a="pickSvc" data-id="'+s.id+'"><span class="gx"><b>'+esc(s.name)+'</b><small>約 '+s.dur+' 分鐘</small></span><span class="pr">'+money(s.price)+'</span></button>';
+      });
+    });
+    return h+'</div>';
+  }
+  var sv=svc(U.svc);
+  if(st===2){
+    var h2=steps+back+'<div class="sec"><h4>② 想找哪位設計師？</h4><div class="mut sm">'+esc(sv.name)+'・約 '+sv.dur+' 分鐘</div>';
+    var ns=nextSlot(sv,'any');
+    h2+='<button class="opt" data-a="pickDes" data-id="any"><span class="av">?</span><span class="gx"><b>不指定</b><small>'+(ns?'最快 '+esc(dlab(ns.day))+' '+tm(ns.start):'近兩週沒有空檔')+'</small></span></button>';
+    qualified(sv).forEach(function(D){
+      var n=nextSlot(sv,D.id);
+      h2+='<button class="opt" data-a="pickDes" data-id="'+D.id+'"><span class="av">'+esc(D.name[0])+'</span><span class="gx"><b>'+esc(D.name)+'</b><small>'+esc(D.title)+'・'+(n?'下個空檔 '+esc(dlab(n.day))+' '+tm(n.start):'近兩週沒有空檔')+'</small></span></button>';
+    });
+    return h2+'</div>';
+  }
+  if(st===3){
+    var h3=steps+back+'<div class="sec"><h4>③ 選日期與時段</h4><div class="mut sm">'+esc(sv.name)+'・'+(U.des==='any'?'不指定設計師':esc(des(U.des).name))+'・只列出真的有空的時段</div><div class="chips" style="margin-top:8px">';
+    for(var d=C.todayIdx;d<C.todayIdx+10;d++){var n=slotsFor(sv,U.des,d).length;
+      h3+='<button class="chip'+(U.day===d?' on':'')+'" data-a="pickDay" data-d="'+d+'"'+(n?'':' disabled')+'><b>'+esc(dlab(d).split('（')[0])+'</b>'+esc('週'+WD[d%7])+'<br>'+(n?n+' 個':'無')+'</button>';}
+    h3+='</div>';
+    if(U.day!=null){var sl=slotsFor(sv,U.des,U.day);h3+='<div class="slots">'+sl.map(function(s){return '<button class="slot'+(U.start===s.start?' on':'')+'" data-a="pickSlot" data-s="'+s.start+'">'+tm(s.start)+'</button>'}).join('')+'</div>'}
+    else h3+='<div class="mut sm">先選一天</div>';
+    return h3+'</div>';
+  }
+  if(st===4){
+    var sl2=slotsFor(sv,U.des,U.day).find(function(s){return s.start===U.start});
+    if(!sl2){U.step=3;return bookBody(c)}
+    var D2=des(sl2.des);
+    return steps+back+'<div class="sec"><h4>④ 確認預約</h4>'+
+     '<div class="rowkv"><span>項目</span><span>'+esc(sv.name)+'（約 '+sv.dur+' 分鐘）</span></div>'+
+     '<div class="rowkv"><span>設計師</span><span>'+esc(D2.name)+(U.des==='any'?'（系統幫你安排）':'')+'</span></div>'+
+     '<div class="rowkv"><span>時間</span><span>'+esc(dlab(U.day))+' '+tm(U.start)+'–'+tm(U.start+sv.dur)+'</span></div>'+
+     '<div class="rowkv"><span>金額</span><span>'+money(sv.price)+'</span></div>'+
+     '<div class="rowkv"><span>付款</span><span>'+esc(payText(c,sv.id,sv.price))+'</span></div>'+
+     '<div style="margin-top:6px"><label class="mut sm" for="note">想跟設計師說的話（選填）</label><textarea id="note" rows="2" style="width:100%" maxlength="60" data-in="note">'+esc(U.note)+'</textarea></div>'+
+     '<button class="btn" style="width:100%;margin-top:10px" data-a="confirmBook">確認預約</button></div>';
+  }
+  var b=bk(U.okId);if(!b){U.step=1;return bookBody(c)}
+  var bs=svc(b.svc);
+  return '<div class="fx ok"><div class="fh"><div class="br">'+esc(C.shopName)+'</div><div class="kk">預約成功</div><div class="tt">'+esc(bs.name)+'</div></div><div class="fb">'+
+   '<div class="rowkv"><span>設計師</span><span>'+esc(des(b.des).name)+'</span></div><div class="rowkv"><span>時間</span><span>'+esc(dlab(b.day))+' '+tm(b.start)+'–'+tm(b.start+b.dur)+'</span></div>'+
+   '<div class="rowkv"><span>金額</span><span>'+money(b.price)+'</span></div>'+(b.note?'<div class="rowkv"><span>備註</span><span>'+esc(b.note)+'</span></div>':'')+
+   '<div class="mut sm" style="margin-top:6px">前一天與當天會再提醒你，可以一鍵確認或改期。</div></div><div class="ff"><button class="pri" data-a="ctab" data-t="mine">看我的預約</button><button data-a="again">再約一筆</button></div></div>';
+}
+function mineBody(c){
+  var mine=S.bookings.filter(function(b){return b.cust===c.id&&(b.status==='booked'||b.status==='pending')}).sort(function(a,b){return a.day-b.day||a.start-b.start});
+  if(!mine.length)return '<div class="sec empty">目前沒有預約<br><button class="btn s" data-a="ctab" data-t="book" style="margin-top:8px">去預約</button></div>';
+  return mine.map(function(b){
+    var sv=svc(b.svc),h='<div class="sec c-'+sv.cat+'" style="border-left:5px solid var(--c)"><b>'+esc(sv.name)+'</b> <span class="tag '+(b.status==='pending'?'bad':'')+'">'+(b.status==='pending'?'待改約':'已預約')+'</span><div class="mut sm">'+esc(dlab(b.day))+' '+tm(b.start)+'–'+tm(b.start+b.dur)+'・'+esc(des(b.des).name)+'</div>'+(b.note?'<div class="sm">備註：'+esc(b.note)+'</div>':'')+
+     '<div style="display:flex;gap:6px;margin-top:8px"><button class="btn ghost s" data-a="myResched" data-b="'+b.id+'">改期</button><button class="btn ghost s" data-a="myCancel" data-b="'+b.id+'">取消</button></div>';
+    if(U.reschedFor===b.id){var o=reschedOpts(b.id);h+='<div class="ff" style="margin-top:8px;display:flex;flex-direction:column;gap:6px">'+(o.length?o.map(function(x){return '<button class="btn s" data-a="move" data-b="'+b.id+'" data-d="'+x.day+'" data-s="'+x.start+'" data-x="'+x.des+'">'+esc(dlab(x.day)+' '+tm(x.start)+'・'+des(x.des).name)+'</button>'}).join(''):'<span class="mut sm">近期沒有可改的空檔</span>')+'</div>'}
+    return h+'</div>';
+  }).join('');
+}
+function walletBody(c){
+  var h='<div class="sec"><div class="mut sm">儲值金餘額</div><div class="wbig">'+money(c.stored)+'</div></div><div class="sec"><h4>我的套票</h4>';
+  if(!c.packs.length)h+='<div class="mut sm">目前沒有套票</div>';
+  c.packs.forEach(function(p){var d=pack(p.pid);h+='<div style="margin-bottom:8px"><b>'+esc(d.name)+'</b> <span class="mut">剩 '+p.left+' / '+d.times+' 次</span><div class="pack">'+Array.from({length:d.times},function(_,i){return '<i class="'+(i<p.left?'f':'')+'"></i>'}).join('')+'</div></div>'});
+  h+='</div><div class="sec"><h4>最近扣款紀錄</h4>';
+  var lg=S.ledger.filter(function(l){return l.cust===c.id}).slice(0,5);
+  h+=lg.length?lg.map(function(l){return '<div class="sm" style="padding:3px 0">'+esc(l.text)+'</div>'}).join(''):'<div class="mut sm">還沒有紀錄。到店消費結帳後，會自動出現在這裡。</div>';
+  return h+'</div>';
+}
+function inboxBody(c){
+  var ms=inbox(c.id).slice().reverse();
+  return ms.length?ms.map(card).join(''):'<div class="sec empty">還沒有訊息。<br>試試右上角「▶ 一鍵示範」，或到老闆端按「送出提醒」。</div>';
+}
+
+/* 設計師 */
+function renderDes(){
+  var D=des(U.dSel),L=U.leave;
+  var pills='<div class="pills">'+C.designers.map(function(x){return '<button data-a="dsel" data-id="'+x.id+'" class="'+(x.id===U.dSel?'on':'')+'">'+esc(x.name)+'</button>'}).join('')+'</div>';
+  var today=S.bookings.filter(function(b){return b.des===D.id&&b.day===C.todayIdx&&active(b)}).sort(function(a,b){return a.start-b.start});
+  var h=pills+'<div class="two"><div>'+
+   '<div class="card"><h3>今日預約（'+esc(dlab(C.todayIdx))+'）・'+esc(D.name)+'</h3>'+(today.length?today.map(function(b){return bkRow(b)}).join(''):'<div class="mut">今天沒有預約'+(D.off.indexOf(C.todayIdx%7)>=0?'（今日休假）':'')+'</div>')+'</div>'+
+   '<div class="card"><h3>本週接下來的預約</h3>';
+  var any=false;
+  for(var d=C.todayIdx+1;d<=6;d++){var l=S.bookings.filter(function(b){return b.des===D.id&&b.day===d&&active(b)}).sort(function(a,b){return a.start-b.start});
+    if(!l.length)continue;any=true;h+='<div class="mut sm" style="margin-top:6px"><b>'+esc(dlab(d))+'</b></div>'+l.map(function(b){return bkRow(b)}).join('')}
+  if(!any)h+='<div class="mut">沒有</div>';
+  h+='</div></div><div>';
+  // 請假表單
+  var days=[];for(var k=C.todayIdx;k<C.todayIdx+NDAYS;k++){if(hrs(k)&&D.off.indexOf(k%7)<0)days.push(k)}
+  if(days.indexOf(L.day)<0)L.day=days[0];
+  var hh=hrs(L.day)||[600,1200],from,to;
+  if(L.preset==='full'){from=hh[0];to=hh[1]}else if(L.preset==='am'){from=hh[0];to=Math.min(hh[1],13*60)}else if(L.preset==='pm'){from=Math.max(hh[0],13*60);to=hh[1]}else{from=Math.max(hh[0],Math.min(L.from,hh[1]-C.step));to=Math.max(from+C.step,Math.min(L.to,hh[1]))}
+  var tOpt=function(sel){var o='';for(var t=hh[0];t<=hh[1];t+=C.step)o+='<option value="'+t+'"'+(t===sel?' selected':'')+'>'+tm(t)+'</option>';return o};
+  var aff=affectedBy(D.id,L.day,from,to);
+  h+='<div class="card" id="leaveCard"><h3>請假或改時段（'+esc(D.name)+'）</h3>'+
+   '<div class="fld"><label for="lDay">日期</label><select id="lDay" data-ch="lDay">'+days.map(function(x){return '<option value="'+x+'"'+(x===L.day?' selected':'')+'>'+esc(dlab(x))+'</option>'}).join('')+'</select></div>'+
+   '<div class="fld"><label for="lPre">範圍</label><select id="lPre" data-ch="lPre">'+[['full','全天請假'],['am','上午請假（到 13:00）'],['pm','下午請假（13:00 起）'],['cus','自訂時段（改時段）']].map(function(x){return '<option value="'+x[0]+'"'+(x[0]===L.preset?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div>'+
+   (L.preset==='cus'?'<div class="fld"><label for="lFrom">時間</label><select id="lFrom" data-ch="lFrom">'+tOpt(from)+'</select> 到 <select id="lTo" data-ch="lTo" aria-label="結束時間">'+tOpt(to)+'</select></div>':'')+
+   '<div class="mut sm" style="margin-bottom:8px">不在班的時段：'+esc(dlab(L.day))+' '+tm(from)+'–'+tm(to)+'</div>'+
+   '<div class="card" style="background:var(--soft);margin:0 0 10px"><b>會影響 '+aff.length+' 位客人</b>'+(aff.length?'<div class="sm">'+aff.map(function(b){return esc(cust(b.cust).name)+'（'+tm(b.start)+' '+esc(svc(b.svc).name)+'）'}).join('、')+'</div>':'<div class="sm mut">這個時段沒有預約，直接生效。</div>')+'</div>'+
+   '<button class="btn" data-a="leaveGo" id="btnLeave">送出請假</button></div>';
+  var my=S.leaves.filter(function(l){return l.des===D.id});
+  h+='<div class="card"><h3>已登記的請假</h3>'+(my.length?my.map(function(l){return '<div class="li"><div class="gx">'+esc(dlab(l.day))+' '+tm(l.from)+'–'+tm(l.to)+'</div><button class="btn ghost s" data-a="leaveCancel" data-id="'+l.id+'">取消請假</button></div>'}).join(''):'<div class="mut">目前沒有</div>')+'</div></div></div>';
+  return h;
+}
+
+/* 老闆 */
+function renderOwner(){
+  var tabs=[['grid','預約總表'],['recall','回訪提醒'],['stored','儲值與套票'],['payroll','月結'],['gap','空檔推播（選配）'],['log','訊息紀錄']];
+  var h='<div class="pills" role="tablist">'+tabs.map(function(t){return '<button data-a="otab" data-t="'+t[0]+'" class="'+(U.oTab===t[0]?'on':'')+'">'+t[1]+'</button>'}).join('')+'</div>';
+  var t=U.oTab;
+  if(t==='grid')h+=ownerGrid();else if(t==='recall')h+=ownerRecall();else if(t==='stored')h+=ownerStored();else if(t==='payroll')h+=ownerPay();else if(t==='gap')h+=ownerGap();else h+=ownerLog();
+  return h;
+}
+function ownerGrid(){
+  var d=U.gridDay,h='<div class="chips" id="dayChips">';
+  for(var i=0;i<NDAYS;i++){var n=S.bookings.filter(function(b){return b.day===i&&active(b)}).length;
+    h+='<button class="chip'+(d===i?' on':'')+'" data-a="gday" data-d="'+i+'"><b>'+esc(dlab(i).split('（')[0])+'</b>週'+WD[i%7]+(i===C.todayIdx?'・今天':'')+'<br>'+(hrs(i)?n+' 筆':'公休')+'</button>'}
+  h+='</div>';
+  var tm1=S.bookings.filter(function(b){return b.day===C.todayIdx+1&&b.status==='booked'&&!b.rem}).length;
+  var td=S.bookings.filter(function(b){return b.day===C.todayIdx&&b.status==='booked'&&b.start>C.nowMin&&!b.rem}).length;
+  h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"><button class="btn s" data-a="remind" data-w="tom"'+(tm1?'':' disabled')+'>送出明日提醒（'+tm1+' 位）</button><button class="btn ghost s" data-a="remind" data-w="tod"'+(td?'':' disabled')+'>送出當天提醒（'+td+' 位）</button></div>';
+  var hh=hrs(d);
+  if(!hh)return h+'<div class="card empty">這天公休</div>';
+  var rows=(hh[1]-hh[0])/C.step,cols=C.designers;
+  var g='<div class="gscroll" tabindex="0" aria-label="預約總表，可左右捲動"><div class="grid" style="--cols:'+cols.length+';--rows:'+rows+'">';
+  g+='<div class="gh" style="grid-row:1;grid-column:1"></div>';
+  cols.forEach(function(D,ci){g+='<div class="gh" style="grid-row:1;grid-column:'+(ci+2)+'">'+esc(D.name)+'</div>'});
+  for(var r=0;r<rows;r++){
+    var mn=hh[0]+r*C.step;
+    g+='<div class="gt" style="grid-row:'+(r+2)+';grid-column:1">'+(mn%60===0?tm(mn):'')+'</div>';
+    cols.forEach(function(D,ci){
+      var off=D.off.indexOf(d%7)>=0,pst=d<C.todayIdx||(d===C.todayIdx&&mn<C.nowMin);
+      g+='<div class="gc'+(off?' off':pst?' pst':'')+'" style="grid-row:'+(r+2)+';grid-column:'+(ci+2)+'"></div>';
+    });
+  }
+  cols.forEach(function(D,ci){if(D.off.indexOf(d%7)>=0)g+='<div class="lv" style="grid-row:2/span 2;grid-column:'+(ci+2)+';border:0">休假</div>'});
+  S.leaves.filter(function(l){return l.day===d}).forEach(function(l){
+    var ci=cols.findIndex(function(x){return x.id===l.des});
+    g+='<div class="lv" style="grid-row:'+((l.from-hh[0])/C.step+2)+'/span '+((l.to-l.from)/C.step)+';grid-column:'+(ci+2)+'">'+esc(des(l.des).name)+' 請假<br>'+tm(l.from)+'–'+tm(l.to)+'</div>'});
+  S.bookings.filter(function(b){return b.day===d&&active(b)}).forEach(function(b){
+    var ci=cols.findIndex(function(x){return x.id===b.des}),sv=svc(b.svc);
+    g+='<button class="bk c-'+sv.cat+' '+b.status+'" data-a="bk" data-id="'+b.id+'" style="grid-row:'+((b.start-hh[0])/C.step+2)+'/span '+(b.dur/C.step)+';grid-column:'+(ci+2)+'" title="'+esc(cust(b.cust).name+' '+sv.name)+'">'+(b.req?'★ ':'')+esc(cust(b.cust).name)+'<small>'+esc(sv.name)+(b.status==='pending'?'・待改約':b.status==='done'?'・已完成':b.rem?'・已提醒':'')+'</small></button>';
+  });
+  g+='</div></div>';
+  var lg='<div class="legend">'+Object.keys(C.categories).map(function(k){return '<span class="c-'+k+'"><span class="dot"></span>'+esc(C.categories[k].name)+'</span>'}).join('')+'<span>★ 客人指定</span><span>紅斜線＝待改約</span><span>灰斜線＝休假／請假</span><span>← 左右滑動看全部設計師 →</span></div>';
+  return h+g+lg;
+}
+function ownerRecall(){
+  var rl=recallList(),unsent=rl.filter(function(r){return !r.sent}).length;
+  var h='<div class="two"><div class="card"><h3>回訪週期（可以自己改）</h3><div class="mut sm" style="margin-bottom:6px">依項目設定「做完幾天後提醒回來」，到期前 '+C.recallLead+' 天就會出現在右邊清單。</div><div class="tw"><table><tr><th>項目</th><th class="n">週期（天）</th></tr>'+
+   C.services.map(function(s){return '<tr><td><span class="dot c-'+s.cat+'"></span>'+esc(s.name)+'</td><td class="n"><input type="number" min="7" max="365" style="width:76px" value="'+S.cycles[s.id]+'" data-ch="cycle" data-id="'+s.id+'" aria-label="'+esc(s.name)+'回訪週期"></td></tr>'}).join('')+'</table></div></div>'+
+   '<div class="card"><h3>該回來的客人（'+rl.length+' 位）</h3><div style="margin-bottom:8px"><button class="btn" data-a="recallAll"'+(unsent?'':' disabled')+'>一鍵全部送提醒（'+unsent+'）</button></div><div class="tw"><table><tr><th>客人</th><th>項目</th><th>距上次</th><th>狀態</th><th></th></tr>'+
+   (rl.map(function(r){var st=r.left<0?'<span class="tag bad">逾期 '+(-r.left)+' 天</span>':r.left===0?'<span class="tag warn">今天到期</span>':'<span class="tag">再 '+r.left+' 天</span>';
+     return '<tr><td>'+esc(r.c.name)+'</td><td>'+esc(svc(r.sid).name)+'</td><td>'+r.ago+' 天（週期 '+r.cyc+'）</td><td>'+st+'</td><td>'+(r.sent?'<span class="tag ok">已送出</span>':'<button class="btn s" data-a="recall1" data-c="'+r.c.id+'" data-id="'+r.sid+'">送提醒</button>')+'</td></tr>'}).join('')||'<tr><td colspan="5" class="mut">目前沒有需要提醒的客人</td></tr>')+'</table></div></div></div>';
+  return h;
+}
+function ownerStored(){
+  var tot=S.customers.reduce(function(a,c){return a+c.stored},0),pk=S.customers.reduce(function(a,c){return a+c.packs.reduce(function(x,p){return x+p.left},0)},0);
+  var h='<div class="kpis"><div class="kpi"><b>'+money(tot)+'</b><span>全部客人儲值金餘額</span></div><div class="kpi"><b>'+pk+'</b><span>未使用的套票次數</span></div><div class="kpi"><b>'+S.ledger.length+'</b><span>本次示範自動扣款筆數</span></div></div>';
+  h+='<div class="two"><div class="card"><h3>客人餘額</h3><div class="mut sm" style="margin-bottom:6px">到「預約總表」點一筆預約按「結帳」，會依套票→儲值金→現場付款自動扣。</div><div class="tw"><table><tr><th>客人</th><th class="n">儲值金</th><th>套票</th><th></th></tr>'+
+   S.customers.map(function(c){return '<tr><td>'+esc(c.name)+'</td><td class="n">'+money(c.stored)+'</td><td>'+(c.packs.map(function(p){var d=pack(p.pid);return esc(d.name)+' 剩 '+p.left}).join('<br>')||'<span class="mut">—</span>')+'</td><td><button class="btn ghost s" data-a="topup" data-c="'+c.id+'">儲值／售票</button></td></tr>'}).join('')+'</table></div></div>'+
+   '<div class="card"><h3>最近自動扣款</h3>'+(S.ledger.length?S.ledger.slice(0,12).map(function(l){return '<div class="li"><div class="gx"><b>'+esc(cust(l.cust).name)+'</b>　'+esc(l.text)+'</div></div>'}).join(''):'<div class="mut">還沒有。到預約總表按一筆預約的「結帳」試試。</div>')+'</div></div>';
+  return h;
+}
+function ownerPay(){
+  var rows=payroll(),T=rows.reduce(function(a,r){a.rev+=r.rev;a.comm+=r.comm;a.n+=r.n;return a},{rev:0,comm:0,n:0});
+  var h='<div class="kpis"><div class="kpi"><b>'+money(T.rev)+'</b><span>'+esc(C.historyLabel)+'：總業績</span></div><div class="kpi"><b>'+money(T.comm)+'</b><span>設計師抽成合計</span></div><div class="kpi"><b>'+money(T.rev-T.comm)+'</b><span>店家留存（未扣其他成本）</span></div><div class="kpi"><b>'+T.n+'</b><span>服務單數</span></div></div>';
+  h+='<div class="card"><h3>每位設計師的業績與抽成</h3><div class="mut sm" style="margin-bottom:6px">抽成比例：'+Object.keys(C.categories).map(function(k){return esc(C.categories[k].name)+' '+Math.round(C.commission[k]*100)+'%'}).join('、')+'；客人指定設計師再加 '+Math.round(C.commission.requestBonus*100)+'%。比例在 config.js 設定。</div><div class="tw"><table><tr><th>設計師</th><th class="n">單數</th><th class="n">指定單</th><th class="n">業績</th><th class="n">抽成</th><th class="n">實際抽成率</th></tr>'+
+   rows.map(function(r){return '<tr><td><b>'+esc(r.D.name)+'</b><div class="mut sm">'+Object.keys(r.by).map(function(k){return esc(k)+' '+money(r.by[k])}).join('・')+'</div></td><td class="n">'+r.n+'</td><td class="n">'+r.req+'</td><td class="n">'+money(r.rev)+'</td><td class="n"><b>'+money(r.comm)+'</b></td><td class="n">'+(r.rev?(r.comm/r.rev*100).toFixed(1)+'%':'—')+'</td></tr>'}).join('')+
+   '<tr><td><b>合計</b></td><td class="n">'+T.n+'</td><td class="n"></td><td class="n">'+money(T.rev)+'</td><td class="n"><b>'+money(T.comm)+'</b></td><td class="n">'+(T.rev?(T.comm/T.rev*100).toFixed(1)+'%':'')+'</td></tr></table></div></div>';
+  return h;
+}
+function ownerGap(){
+  var gs=gaps();
+  var h='<div class="card"><h3>空檔推播 <span class="tag">選配功能</span></h3><div class="mut sm">系統找出未來 3 天連續空 60 分鐘以上的時段，挑出「週期快到」且適合的熟客，推出 '+Math.round(C.gapDiscount*100)/10+' 折的限時空檔。先看過名單再按發送。</div></div>';
+  if(!gs.length)return h+'<div class="card empty">近 3 天沒有適合推播的空檔</div>';
+  h+='<div class="tw card"><table><tr><th>設計師</th><th>空檔</th><th>適合的熟客</th><th></th></tr>';
+  gs.slice(0,10).forEach(function(g){var tg=gapTargets(g);
+    h+='<tr><td>'+esc(g.D.name)+'</td><td>'+esc(dlab(g.day))+' '+tm(g.from)+'–'+tm(g.to)+'</td><td>'+(tg.map(function(r){return esc(r.c.name)+'（'+esc(svc(r.sid).name)+'）'}).join('、')||'<span class="mut">沒有合適的人</span>')+'</td><td>'+(S.gapSent[g.key]?'<span class="tag ok">已推播</span>':'<button class="btn s" data-a="gapGo" data-k="'+g.key+'"'+(tg.length?'':' disabled')+'>推播 '+tg.length+' 位</button>')+'</td></tr>'});
+  return h+'</table></div>';
+}
+function ownerLog(){
+  var ms=S.msgs.slice().reverse();
+  return '<div class="card"><h3>已發送的 LINE 訊息（模擬，共 '+ms.length+' 則）</h3>'+(ms.length?ms.map(function(m){return '<div class="li"><div class="tm sm mut" style="width:74px">'+esc(m.t)+'</div><div class="gx"><b>→ '+esc(cust(m.cust).name)+'</b>　<span class="tag">'+esc(m.kind)+'</span> '+esc(m.title)+'<div class="mut sm">'+(m.done?'客人回覆：'+esc(m.result):(m.resched||(m.acts&&m.acts.length))?'等待客人回覆':'')+'</div></div></div>'}).join(''):'<div class="mut">還沒有發送紀錄。到「回訪提醒」或預約總表按送出，或跑一鍵示範。</div>')+'</div>';
+}
+
+function renderModal(){
+  var m=U.modal,el=$('#modal');
+  if(!m){el.classList.remove('on');el.innerHTML='';return}
+  var h='';
+  if(m.type==='bk'){
+    var b=bk(m.id),sv=svc(b.svc),c=cust(b.cust);
+    h='<h3>'+esc(c.name)+'・'+esc(sv.name)+'</h3><div class="rowkv"><span>設計師</span><span>'+esc(des(b.des).name)+(b.req?'（客人指定）':'')+'</span></div><div class="rowkv"><span>時間</span><span>'+esc(dlab(b.day))+' '+tm(b.start)+'–'+tm(b.start+b.dur)+'</span></div><div class="rowkv"><span>電話</span><span>'+esc(c.phone)+'</span></div><div class="rowkv"><span>金額</span><span>'+money(b.price)+'</span></div><div class="rowkv"><span>付款預告</span><span>'+esc(payText(c,b.svc,b.price))+'</span></div>'+(b.note?'<div class="rowkv"><span>備註</span><span>'+esc(b.note)+'</span></div>':'')+
+     '<div class="macts">'+(b.status==='booked'?'<button class="btn g" data-a="checkout" data-id="'+b.id+'">結帳（自動扣）</button>':'')+(b.status==='booked'||b.status==='pending'?'<button class="btn red" data-a="bkCancel" data-id="'+b.id+'">取消預約</button>':'')+'<button class="btn ghost" data-a="mclose">關閉</button></div>';
+  } else if(m.type==='leave'){
+    h='<h3>確認請假</h3><div>'+esc(des(m.did).name)+'　'+esc(dlab(m.day))+' '+tm(m.from)+'–'+tm(m.to)+'</div><div style="margin:10px 0"><b>受影響的客人 '+m.ids.length+' 位</b></div>'+(m.ids.map(function(id){var b=bk(id);return '<div class="li"><div class="tm">'+tm(b.start)+'</div><div class="gx"><b>'+esc(cust(b.cust).name)+'</b>　'+esc(svc(b.svc).name)+'</div></div>'}).join('')||'<div class="mut">沒有人受影響</div>')+'<div class="mut sm" style="margin-top:8px">按下確認後：這些預約標成「待改約」，系統自動用 LINE 通知客人，並附上可選的新時段。</div><div class="macts"><button class="btn ghost" data-a="mclose">取消</button><button class="btn" data-a="leaveOk" id="btnLeaveOk">確認請假並通知</button></div>';
+  } else if(m.type==='topup'){
+    var cc=cust(m.cid);
+    h='<h3>'+esc(cc.name)+'：儲值／購買套票</h3><div class="mut sm">目前儲值金 '+money(cc.stored)+'</div>'+C.topups.map(function(t){return '<button class="opt" data-a="doTopup" data-c="'+cc.id+'" data-id="'+t.id+'"><span class="gx"><b>儲值 '+money(t.amount)+'</b><small>贈送 '+money(t.bonus)+'</small></span><span class="pr">'+money(t.amount+t.bonus)+'</span></button>'}).join('')+C.packs.map(function(p){return '<button class="opt" data-a="doPack" data-c="'+cc.id+'" data-id="'+p.id+'"><span class="gx"><b>'+esc(p.name)+'</b><small>共 '+p.times+' 次</small></span><span class="pr">'+money(p.price)+'</span></button>'}).join('')+'<div class="macts"><button class="btn ghost" data-a="mclose">關閉</button></div>';
+  }
+  el.innerHTML='<div class="mbox">'+h+'</div>';el.classList.add('on');
+}
+
+function render(){
+  document.title=C.shopName+'｜美業預約與會員系統示範';
+  $('#shopLogo').firstChild.nodeValue=C.shopName;
+  ['cust','des','owner'].forEach(function(r){$('#r-'+r).classList.toggle('on',U.role===r)});
+  var keep=document.activeElement&&document.activeElement.id;
+  $('#app').innerHTML=U.role==='cust'?renderCust():U.role==='des'?renderDes():renderOwner();
+  renderModal();
+  if(keep){var e=document.getElementById(keep);if(e&&(e.tagName==='SELECT'||e.tagName==='INPUT'))try{e.focus()}catch(x){}}
+}
+
+/* ---------- 動作 ---------- */
+var A={
+ role:function(d){U.role=d.r;U.modal=null;setHash(d.r==='cust'?'book':d.r==='des'?'designer':'grid')},
+ ctab:function(d){U.tab=d.t;if(d.t==='book'&&U.step===5){U.step=1}},
+ pickSvc:function(d){U.svc=d.id;U.des=null;U.day=null;U.start=null;U.step=2},
+ pickDes:function(d){U.des=d.id;U.day=null;U.start=null;U.step=3},
+ pickDay:function(d){U.day=+d.d;U.start=null},
+ pickSlot:function(d){U.start=+d.s;U.step=4},
+ back:function(){if(U.step===4){U.step=3}else if(U.step===3){U.step=2}else if(U.step===2){U.step=1}},
+ again:function(){U.step=1;U.svc=null;U.des=null;U.day=null;U.start=null;U.note='';U.okId=null},
+ confirmBook:function(){
+   var sv=svc(U.svc),sl=slotsFor(sv,U.des,U.day).find(function(s){return s.start===U.start});
+   if(!sl){toast('這個時段剛被別人預約走了，請重新選一個');U.step=3;U.start=null;return}
+   var b=addBooking({day:U.day,des:sl.des,start:U.start,svc:U.svc,cust:U.persona,req:U.des!=='any',note:U.note.trim()});
+   U.okId=b.id;U.step=5;U.note='';
+   send(U.persona,{kind:'預約成功',tone:'ok',title:dlab(b.day)+' '+tm(b.start)+' '+sv.name,rows:[['設計師',des(b.des).name],['金額',money(b.price)]],text:'前一天與當天會再提醒你。'});
+ },
+ myResched:function(d){U.reschedFor=U.reschedFor===d.b?null:d.b},
+ myCancel:function(d){var b=bk(d.b);b.status='cancel';toast('已取消，時段釋出給其他客人')},
+ move:function(d){
+   var ok=moveB(d.b,+d.d,+d.s,d.x),m=d.m&&S.msgs.find(function(z){return z.id===d.m});
+   if(!ok){toast('這個時段剛被預約走了，已更新可選時段');return}
+   var b=bk(d.b);U.reschedFor=null;
+   var res='已改約 '+dlab(b.day)+' '+tm(b.start)+'・'+des(b.des).name;
+   if(m){m.done=true;m.result=res}
+   S.msgs.forEach(function(z){if(z.resched===b.id&&!z.done){z.done=true;z.result=res}});
+   send(b.cust,{kind:'改約成功',tone:'ok',title:dlab(b.day)+' '+tm(b.start)+' '+svc(b.svc).name,rows:[['設計師',des(b.des).name]],text:'已幫你改好，期待見面。'});
+   toast(cust(b.cust).name+'：'+res);
+ },
+ callme:function(d){var m=S.msgs.find(function(z){return z.id===d.m});m.done=true;m.result='已通知店家，會再與你聯繫';toast('已通知店家')},
+ confirm:function(d){var m=S.msgs.find(function(z){return z.id===d.m});bk(d.arg).confirmed=true;m.done=true;m.result='已確認出席'},
+ wantmove:function(d){var m=S.msgs.find(function(z){return z.id===d.m});m.resched=d.arg;m.acts=[]},
+ dismiss:function(d){var m=S.msgs.find(function(z){return z.id===d.m});m.done=true;m.result='好的，下次再說'},
+ rebook:function(d){var m=S.msgs.find(function(z){return z.id===d.m});m.done=true;m.result='開啟預約';U.role='cust';U.persona=m.cust;U.tab='book';U.svc=d.arg;U.des=null;U.day=null;U.start=null;U.step=2},
+ grab:function(d){
+   var m=S.msgs.find(function(z){return z.id===d.m}),p=d.arg.split('|'),sv=svc(p[3]),disc=+p[4];
+   if(!isFree(p[0],+p[1],+p[2],sv.dur)){m.done=true;m.result='來晚了一步，這個空檔已被預約';toast('這個空檔已被預約');return}
+   var b=addBooking({day:+p[1],des:p[0],start:+p[2],svc:p[3],cust:m.cust,req:false,price:Math.round(sv.price*disc/10)*10});
+   m.done=true;m.result='搶到了！'+dlab(b.day)+' '+tm(b.start)+'，'+money(b.price);toast(cust(m.cust).name+' 搶到空檔');
+ },
+ dsel:function(d){U.dSel=d.id},
+ leaveGo:function(){
+   var D=des(U.dSel),L=U.leave,hh=hrs(L.day),from,to;
+   if(L.preset==='full'){from=hh[0];to=hh[1]}else if(L.preset==='am'){from=hh[0];to=Math.min(hh[1],780)}else if(L.preset==='pm'){from=Math.max(hh[0],780);to=hh[1]}else{from=Math.max(hh[0],Math.min(L.from,hh[1]-C.step));to=Math.max(from+C.step,Math.min(L.to,hh[1]))}
+   U.modal={type:'leave',did:D.id,day:L.day,from:from,to:to,ids:affectedBy(D.id,L.day,from,to).map(function(b){return b.id})};
+ },
+ leaveOk:function(){
+   var m=U.modal;var aff=applyLeave(m.did,m.day,m.from,m.to);notifyAffected(aff);U.modal=null;
+   toast(aff.length?'已請假；'+aff.length+' 位客人已收到改約通知（模擬）':'已登記請假');
+ },
+ leaveCancel:function(d){
+   var l=S.leaves.find(function(z){return z.id===d.id});S.leaves=S.leaves.filter(function(z){return z.id!==d.id});
+   S.bookings.forEach(function(b){if(b.pend===d.id&&b.status==='pending'){b.status='booked';delete b.pend}});
+   S.msgs.forEach(function(m){if(m.resched&&!m.done){var b=bk(m.resched);if(b&&b.status==='booked'){m.done=true;m.result='請假已取消，原預約照舊'}}});
+   toast('已取消請假，未改約的客人維持原預約');
+ },
+ otab:function(d){U.oTab=d.t},
+ gday:function(d){U.gridDay=+d.d},
+ bk:function(d){U.modal={type:'bk',id:d.id}},
+ mclose:function(){U.modal=null},
+ checkout:function(d){var line=checkout(d.id);U.modal=null;toast('已結帳：'+line)},
+ bkCancel:function(d){bk(d.id).status='cancel';U.modal=null;toast('已取消預約')},
+ remind:function(d){
+   var list=S.bookings.filter(function(b){return b.status==='booked'&&!b.rem&&(d.w==='tom'?b.day===C.todayIdx+1:(b.day===C.todayIdx&&b.start>C.nowMin))});
+   list.forEach(function(b){b.rem=true;var sv=svc(b.svc);
+     send(b.cust,{kind:d.w==='tom'?'明日預約提醒':'今日預約提醒',title:dlab(b.day)+' '+tm(b.start)+' '+sv.name,rows:[['設計師',des(b.des).name]],text:'期待見到你！能準時到嗎？',acts:[{l:'確認出席',a:'confirm',arg:b.id,pri:1},{l:'我要改期',a:'wantmove',arg:b.id}]})});
+   toast('已送出 '+list.length+' 則提醒（模擬）');
+ },
+ recall1:function(d){sendRecall(d.c,d.id);toast('已送出回訪提醒（模擬）')},
+ recallAll:function(){var n=0;recallList().forEach(function(r){if(!r.sent){sendRecall(r.c.id,r.sid);n++}});toast('已送出 '+n+' 則回訪提醒（模擬）')},
+ topup:function(d){U.modal={type:'topup',cid:d.c}},
+ doTopup:function(d){var t=C.topups.find(function(x){return x.id===d.id}),c=cust(d.c);c.stored+=t.amount+t.bonus;S.ledger.unshift({cust:c.id,text:'儲值 '+money(t.amount)+'，贈送 '+money(t.bonus)+'（餘額 '+money(c.stored)+'）'});send(c.id,{kind:'儲值成功',tone:'ok',title:'儲值 '+money(t.amount),rows:[['贈送',money(t.bonus)],['目前餘額',money(c.stored)]]});U.modal=null;toast('已儲值')},
+ doPack:function(d){var p=pack(d.id),c=cust(d.c),ex=c.packs.find(function(x){return x.pid===p.id});if(ex)ex.left+=p.times;else c.packs.push({pid:p.id,left:p.times});S.ledger.unshift({cust:c.id,text:'購買 '+p.name+'（'+money(p.price)+'）'});send(c.id,{kind:'購買成功',tone:'ok',title:p.name,rows:[['次數',p.times+' 次']]});U.modal=null;toast('已售出套票')},
+ gapGo:function(d){
+   var g=gaps().find(function(x){return x.key===d.k});if(!g)return;
+   var tg=gapTargets(g);S.gapSent[g.key]=1;
+   tg.forEach(function(r){var sv=svc(r.sid);
+     send(r.c.id,{kind:'限時空檔',title:dlab(g.day)+' '+tm(g.from)+' '+g.D.name,rows:[['項目',sv.name],['優惠價',money(Math.round(sv.price*C.gapDiscount/10)*10)+'（原價 '+money(sv.price)+'）']],text:'這個時段臨時有空，先搶先贏。',acts:[{l:'搶這個時段',a:'grab',arg:[g.D.id,g.day,g.from,sv.id,C.gapDiscount].join('|'),pri:1},{l:'不用了',a:'dismiss'}]})});
+   toast('已推播給 '+tg.length+' 位熟客（模擬）');
+ },
+ auto:function(){autoDemo()},
+ autoStop:function(){U.stop=true;$('#banner').classList.remove('on')},
+ reset:function(){fresh();freshUI();$('#banner').classList.remove('on');toast('已還原示範資料')}
+};
+function sendRecall(cid,sid){
+  var c=cust(cid),sv=svc(sid),ago=c.last[sid];
+  S.reminded[cid+'|'+sid]=1;
+  send(cid,{kind:'回訪提醒',title:sv.name+'，到了該保養的時候',rows:[['上次',ago+' 天前'],['建議週期',S.cycles[sid]+' 天']],text:c.name+'，距離上次'+sv.name+'已經 '+ago+' 天，差不多該回來了。想約哪天？',acts:[{l:'立即預約'+sv.name,a:'rebook',arg:sid,pri:1},{l:'下次再說',a:'dismiss'}]});
+}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-a]');if(!t)return;
+  if(t.id==='btnAuto'||t.dataset.a==='auto'){A.auto();return}
+  var f=A[t.dataset.a];if(!f)return;
+  if(U.auto&&['auto'].indexOf(t.dataset.a)<0&&t.dataset.a!=='autoStop'&&t.dataset.a!=='reset')return;
+  f(t.dataset);render();
+});
+document.addEventListener('change',function(e){
+  var t=e.target.closest('[data-ch]');if(!t||U.auto)return;var k=t.dataset.ch,v=t.value;
+  if(k==='persona'){U.persona=v;U.reschedFor=null;A.again()}
+  else if(k==='lDay')U.leave.day=+v;
+  else if(k==='lPre')U.leave.preset=v;
+  else if(k==='lFrom')U.leave.from=+v;
+  else if(k==='lTo')U.leave.to=+v;
+  else if(k==='cycle'){var n=Math.max(7,Math.min(365,+v||7));S.cycles[t.dataset.id]=n}
+  render();
+});
+document.addEventListener('input',function(e){if(e.target.dataset&&e.target.dataset.in==='note')U.note=e.target.value});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&U.modal){U.modal=null;render()}});
+$('#modal').addEventListener('click',function(e){if(e.target.id==='modal'){U.modal=null;render()}});
+
+/* ---------- 路由（hash） ---------- */
+var ROUTES={book:['cust','book'],mine:['cust','mine'],wallet:['cust','wallet'],inbox:['cust','msgs'],designer:['des'],leave:['des'],
+  grid:['owner','grid'],recall:['owner','recall'],stored:['owner','stored'],payroll:['owner','payroll'],gap:['owner','gap'],log:['owner','log']};
+function setHash(h){try{history.replaceState(null,'','#'+h)}catch(e){}}
+function route(){
+  var h=location.hash.replace('#','');
+  if(h==='auto'){setTimeout(autoDemo,500);return}
+  var r=ROUTES[h];if(!r)return;
+  U.role=r[0];if(r[0]==='cust'){U.tab=r[1];if(r[1]==='book'){A.again()}}
+  if(r[0]==='owner')U.oTab=r[1];
+  render();
+  if(h==='leave'){var el=$('#leaveCard');if(el){el.classList.add('hl');el.scrollIntoView({block:'center'})}}
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- 一鍵示範：設計師請假 ---------- */
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms*SPEED)})}
+async function autoDemo(){
+  if(U.auto)return;
+  fresh();freshUI();U.auto=true;window.__autoDone=false;
+  var did=C.demo.leaveDesigner,D=des(did),day=C.demo.leaveDay,hh=hrs(day);
+  try{
+    banner('1/5',D.name+' 在手機按下「請假」：'+dlab(day)+' 全天');
+    U.role='des';U.dSel=did;U.leave={day:day,preset:'full',from:hh[0],to:hh[1]};render();setHash('leave');
+    document.getElementById('leaveCard').classList.add('hl');await sleep(2400);
+    var aff=applyLeave(did,day,hh[0],hh[1]);render();
+    banner('2/5','系統找出受影響的客人：'+aff.length+' 位（'+aff.map(function(b){return cust(b.cust).name}).join('、')+'）');
+    U.role='owner';U.oTab='grid';U.gridDay=day;render();setHash('grid');await sleep(3000);
+    banner('3/5','自動用 LINE 通知這 '+aff.length+' 位客人，並附上可選的新時段（模擬）');
+    notifyAffected(aff);U.oTab='log';render();await sleep(2400);
+    var moved=[];
+    for(var i=0;i<aff.length;i++){
+      var b=aff[i],c=cust(b.cust);
+      banner('4/5',c.name+' 收到通知，自己挑新時段（'+(i+1)+'/'+aff.length+'）');
+      U.role='cust';U.persona=c.id;U.tab='msgs';render();setHash('inbox');await sleep(2000);
+      var o=reschedOpts(b.id)[0];
+      if(!o)continue;
+      var m=S.msgs.find(function(z){return z.resched===b.id&&!z.done});
+      A.move({b:b.id,d:o.day,s:o.start,x:o.des,m:m&&m.id});render();
+      moved.push(c.name+' → '+dlab(o.day).split('（')[0]+' '+tm(o.start)+' '+des(o.des).name);
+      await sleep(1700);
+    }
+    banner('5/5','總表已更新：'+moved.join('；'));
+    U.role='owner';U.oTab='grid';U.gridDay=day;render();setHash('grid');await sleep(4200);
+    banner('完成',D.name+' 的 '+aff.length+' 位客人都已改約，沒有人撞時段。可以繼續自己操作，或按「重置」重來。');
+  }finally{U.auto=false;window.__autoDone=true;render()}
+}
+
+fresh();freshUI();
+window.__beauty={S:function(){return S},U:function(){return U},isFree:isFree,svc:svc,des:des,slotsFor:slotsFor,qualified:qualified,config:C,
+  conflicts:function(){var bad=[];S.bookings.filter(active).forEach(function(a,i,arr){arr.slice(i+1).forEach(function(b){if(a.des===b.des&&a.day===b.day&&a.start<b.start+b.dur&&b.start<a.start+a.dur)bad.push([a.id,b.id])})});return bad}};
+route();render();
+})();
+</script>
+</body>
+</html>
