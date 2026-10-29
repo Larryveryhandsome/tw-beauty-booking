@@ -36,7 +36,7 @@ test.describe('說明頁 index.html', () => {
     const errors = await open(page, 'index.html');
     await expect(page.locator('h1')).toContainText('做客人的頭');
     expect(await page.locator('a[href="demo/index.html#auto"]').count()).toBeGreaterThan(0);
-    await expect(page.locator('a[href="https://line.me/R/ti/p/@812ibtir"]').first()).toBeVisible();
+    await expect(page.locator('a[href="https://line.me/ti/p/xzHT2IywOM"]').first()).toBeVisible();
     expect(errors).toEqual([]);
   });
 

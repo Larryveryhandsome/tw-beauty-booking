@@ -71,7 +71,7 @@ tests/smoke.spec.js 冒煙測試（Playwright）
 
 ## 外部資源
 
-兩頁都不載入外部腳本或字型，離線也能用；頁面上只有連到 LINE 官方帳號 @812ibtir 的連結。
+兩頁都不載入外部腳本或字型，離線也能用；頁面上只有連到 LINE：林其衞 的連結。
 
 ## 🔑 需要金鑰嗎？
 
@@ -121,8 +121,8 @@ npm test
 
 歡迎加 LINE 跟我們聊。我們會依需求的範圍與複雜度報價，原則上以實際報價單為準。
 
-<a href="https://lin.ee/pdYGARu"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36"></a>
+<a href="https://line.me/ti/p/xzHT2IywOM"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36"></a>
 
-- 💬 LINE 官方帳號：[@812ibtir](https://lin.ee/pdYGARu)（請註明「美業預約系統 客製化」）
+- 💬 LINE：[林其衞](https://line.me/ti/p/xzHT2IywOM)（請註明「美業預約系統 客製化」）
 - 🏢 留白事務所：網頁設計、AI 自動化、LINE 系統客製
 - 👤 作者：林其衞／留白事務所
